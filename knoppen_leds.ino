@@ -1,52 +1,56 @@
-#include <FastLED.h>
+#include <FastLED.h>  //Bibliotheek om leds aan te sturen
 
-#define LED_PIN A2  // A2 -> PA7 (Arduino pin 6)
-#define NUM_LEDS 24
-#define EN_LED_PIN A1  // A1 -> PB2 (Arduino pin 9)
-#define BRIGHTNESS 12
-#define LED_TYPE WS2812B
+#define LED_PIN A2        // datapin PA2
+#define NUM_LEDS 24       //aantal leds
+#define EN_LED_PIN A1     // enable pin PA1
+#define BRIGHTNESS 12     // hoe hard de leds kunnen branden. Ik verkies een laag getal anders verblinden de leds.
+#define LED_TYPE WS2812B  // type led dat je gebruikt
 #define COLOR_ORDER GRB
-#define BUTTON_PIN1 A3  // A3 -> PA3 (Arduino pin 2)
-#define BUTTON_PIN2 A4  // A4 -> PA2 (Arduino pin 1)
-#define BUTTON_PIN3 A5  // A5 -> PA1 (Arduino pin 0)
-#define BUTTON_PIN4 A6  // A6 -> PA6 (Arduino pin 5)
+#define BUTTON_PIN1 A3  // knop1 in op PA3
+#define BUTTON_PIN2 A4  // knop2 in op PA4
+#define BUTTON_PIN3 A5  // knop3 in op PA5
+#define BUTTON_PIN4 A6  // knop4 in op PA6
 
 CRGB leds[NUM_LEDS];
 
-// Variables to store the previous button states for debouncing
+//vorige toestand onthouden van de knoppen.
 int lastButton1State = HIGH;
 int lastButton2State = HIGH;
 int lastButton3State = HIGH;
 int lastButton4State = HIGH;
 
-// Variable to track the current LED pattern
-int currentPattern = 0;  // 0: off, 1: Knop1, 2: Knop2, 3: Knop3, 4: Knop4
+// Zal onthouden welk patroon van leds zal gebruikt worden
+int currentPattern = 0;
 
 void setup() {
+  //instialiseren led-strips
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
+  // stroom led strip aanzetten
   pinMode(EN_LED_PIN, OUTPUT);
-  digitalWrite(EN_LED_PIN, HIGH);      // Enable LEDs
-  pinMode(BUTTON_PIN1, INPUT_PULLUP);  // Knop3
-  pinMode(BUTTON_PIN2, INPUT_PULLUP);  // Knop2
-  pinMode(BUTTON_PIN3, INPUT_PULLUP);  // Knop1
-  pinMode(BUTTON_PIN4, INPUT_PULLUP);  // Knop4
-  delay(2000);                         // Initial delay
-  // Start with LEDs off
+  digitalWrite(EN_LED_PIN, HIGH);
+  //knoppen instellen
+  pinMode(BUTTON_PIN1, INPUT_PULLUP);
+  pinMode(BUTTON_PIN2, INPUT_PULLUP);
+  pinMode(BUTTON_PIN3, INPUT_PULLUP);
+  pinMode(BUTTON_PIN4, INPUT_PULLUP);
+  //we zetten een delay om de opstart de tijd te geven.
+  delay(2000);
+  // Starten met alle leds uit
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 }
 
 void loop() {
-  // Read the current state of each button
-  int button1State = digitalRead(BUTTON_PIN1);  // Knop3
-  int button2State = digitalRead(BUTTON_PIN2);  // Knop2
-  int button3State = digitalRead(BUTTON_PIN3);  // Knop1
-  int button4State = digitalRead(BUTTON_PIN4);  // Knop4
+  // Lees de huidige status van elke knop
+  int button1State = digitalRead(BUTTON_PIN1);
+  int button2State = digitalRead(BUTTON_PIN2);
+  int button3State = digitalRead(BUTTON_PIN3);
+  int button4State = digitalRead(BUTTON_PIN4);
 
-  // Apply the current pattern
+
   switch (currentPattern) {
-    case 1:  // Knop1: Green triangle with red edges
+    case 1:  // Patroon 1: Driehoek van groen met rode randen (Knop 1)
       leds[0] = CRGB::Green;
       leds[1] = CRGB::Green;
       leds[2] = CRGB::Green;
@@ -72,7 +76,7 @@ void loop() {
       leds[22] = CRGB::Green;
       leds[23] = CRGB::Red;
       break;
-    case 2:  // Knop2: Blue zigzag with white accents
+    case 2:  // Patroon 2: Blauwe zigzag met witte accenten (Knop 2)
       leds[0] = CRGB::Blue;
       leds[1] = CRGB::Black;
       leds[2] = CRGB::White;
@@ -98,7 +102,7 @@ void loop() {
       leds[22] = CRGB::White;
       leds[23] = CRGB::Black;
       break;
-    case 3:  // Knop3: Yellow wave with green dots
+    case 3:  // Patroon 3: Gele golf met groene stippen (Knop 3)
       leds[0] = CRGB::Yellow;
       leds[1] = CRGB::Black;
       leds[2] = CRGB::Yellow;
@@ -124,7 +128,7 @@ void loop() {
       leds[22] = CRGB::Yellow;
       leds[23] = CRGB::Green;
       break;
-    case 4:  // Knop4: Purple diagonal with orange ends
+    case 4:  // Patroon 4: Paarse diagonaal met oranje uiteinden (Knop 4)
       leds[0] = CRGB::Orange;
       leds[1] = CRGB::Purple;
       leds[2] = CRGB::Black;
@@ -150,31 +154,32 @@ void loop() {
       leds[22] = CRGB::Purple;
       leds[23] = CRGB::Orange;
       break;
-    default:  // Off
+    default:  // alles uit bij default
       fill_solid(leds, NUM_LEDS, CRGB::Black);
       break;
   }
 
-  // Check for button presses (LOW state) with debouncing
-  if (button3State == LOW && lastButton3State == HIGH) {  // Knop1 pressed
+  // debouncing zodat de knop enkel zal reager wanneer hij echt is ingedrukt
+  if (button3State == LOW && lastButton3State == HIGH) {
     currentPattern = 1;
   }
-  if (button2State == LOW && lastButton2State == HIGH) {  // Knop2 pressed
+  if (button2State == LOW && lastButton2State == HIGH) {
     currentPattern = 2;
   }
-  if (button1State == LOW && lastButton1State == HIGH) {  // Knop3 pressed
+  if (button1State == LOW && lastButton1State == HIGH) {
     currentPattern = 3;
   }
-  if (button4State == LOW && lastButton4State == HIGH) {  // Knop4 pressed
+  if (button4State == LOW && lastButton4State == HIGH) {
     currentPattern = 4;
   }
 
-  // Update the previous button states
+  // Sla huidige knopstatussen op voor volgende loop
   lastButton1State = button1State;
   lastButton2State = button2State;
   lastButton3State = button3State;
   lastButton4State = button4State;
-
+  // Update de LEDs met nieuwe kleuren
   FastLED.show();
+  //korte delay voor debounce en stabilistatie van de leds
   delay(100);  // Debounce delay
 }
