@@ -1,7 +1,7 @@
 #include <FastLED.h>  //Bibliotheek om leds aan te sturen
 
 #define LED_PIN A2        // datapin PA2
-#define NUM_LEDS 24       //aantal leds
+#define NUM_LEDS 28       //aantal leds
 #define EN_LED_PIN A1     // enable pin PA1
 #define BRIGHTNESS 12     // hoe hard de leds kunnen branden. Ik verkies een laag getal anders verblinden de leds.
 #define LED_TYPE WS2812B  // type led dat je gebruikt
@@ -49,6 +49,7 @@ void loop() {
   int button4State = digitalRead(BUTTON_PIN4);
 
 
+
   switch (currentPattern) {
     case 1:  // Patroon 1: Driehoek van groen met rode randen (Knop 1)
       leds[0] = CRGB::Green;
@@ -75,6 +76,10 @@ void loop() {
       leds[21] = CRGB::Red;
       leds[22] = CRGB::Green;
       leds[23] = CRGB::Red;
+      leds[24] = CRGB::Green;
+      leds[25] = CRGB::Black;
+      leds[26] = CRGB::Black;
+      leds[27] = CRGB::Black;
       break;
     case 2:  // Patroon 2: Blauwe zigzag met witte accenten (Knop 2)
       leds[0] = CRGB::Blue;
@@ -101,6 +106,10 @@ void loop() {
       leds[21] = CRGB::Black;
       leds[22] = CRGB::White;
       leds[23] = CRGB::Black;
+      leds[24] = CRGB::Black;
+      leds[25] = CRGB::Green;
+      leds[26] = CRGB::Black;
+      leds[27] = CRGB::Black;
       break;
     case 3:  // Patroon 3: Gele golf met groene stippen (Knop 3)
       leds[0] = CRGB::Yellow;
@@ -127,6 +136,10 @@ void loop() {
       leds[21] = CRGB::Black;
       leds[22] = CRGB::Yellow;
       leds[23] = CRGB::Green;
+      leds[24] = CRGB::Black;
+      leds[25] = CRGB::Black;
+      leds[26] = CRGB::Green;
+      leds[27] = CRGB::Black;
       break;
     case 4:  // Patroon 4: Paarse diagonaal met oranje uiteinden (Knop 4)
       leds[0] = CRGB::Orange;
@@ -153,6 +166,10 @@ void loop() {
       leds[21] = CRGB::Black;
       leds[22] = CRGB::Purple;
       leds[23] = CRGB::Orange;
+      leds[24] = CRGB::Black;
+      leds[25] = CRGB::Black;
+      leds[26] = CRGB::Black;
+      leds[27] = CRGB::Green;
       break;
     default:  // alles uit bij default
       fill_solid(leds, NUM_LEDS, CRGB::Black);
